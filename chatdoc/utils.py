@@ -1,5 +1,6 @@
 from chatdoc.debug import FakeChatModel
 from langchain.chat_models.base import BaseChatModel
+from huggingface_hub import InferenceClient
 
 def get_llm(model: str, **kwargs) -> BaseChatModel:
     if model == "debug":

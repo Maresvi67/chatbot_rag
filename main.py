@@ -1,9 +1,13 @@
 import os
 import streamlit as st
 
+from dotenv import load_dotenv
 from chatdoc.chatbot import LLMChatBot
 from chatdoc.chat_message_histories import CustomChatHistory
 from chatdoc.utils import get_llm
+
+# Load enviroment variables
+load_dotenv()
 
 # Parameters
 LLM_MODEL_NAME = "debug"
