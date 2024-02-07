@@ -2,6 +2,7 @@ import os
 import streamlit as st
 
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
+from chatdoc.chatbot import LLMChatBot
 
 # Set title of the page
 st.set_page_config(page_title="Company X: Chat with Documents", page_icon="🤖")
@@ -9,6 +10,9 @@ st.title("🤖 Company X: Chat with Documents")
 
 # Setup memory for contextual conversation
 msgs = StreamlitChatMessageHistory()
+
+# Set LLMChatBot
+llm_chatbot = LLMChatBot()
 
 # Clear messagge
 if len(msgs.messages) == 0 or st.sidebar.button("Clear message history"):
@@ -30,7 +34,7 @@ if user_query := st.chat_input(placeholder="Ask me anything!"):
         st.write(user_query)
 
     # Generate the result of the chatbot
-    result = "I\'ll be ready to answer your questions shortly!"
+    result = llm_chatbot.answer(msgs)
 
     # Add assistant input to chat history
     msgs.add_ai_message(result)
