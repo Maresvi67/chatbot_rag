@@ -1,4 +1,4 @@
-from langchain_community.chat_message_histories import StreamlitChatMessageHistory
+from chatdoc.chat_message_histories import CustomChatHistory
 
 class LLMChatBot():
     def __init__(self):
@@ -12,12 +12,12 @@ class LLMChatBot():
         - None
         """
 
-    def answer(self, messages : StreamlitChatMessageHistory):
+    def answer(self, messages : CustomChatHistory):
         """
         Generates an answer based on the provided chat message history.
 
         Parameters:
-        - messages (StreamlitChatMessageHistory): The chat message history.
+        - messages (CustomChatHistory): The chat message history.
 
         Returns:
         - str: The generated answer.

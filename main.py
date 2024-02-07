@@ -1,15 +1,15 @@
 import os
 import streamlit as st
 
-from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from chatdoc.chatbot import LLMChatBot
+from chatdoc.chat_message_histories import CustomChatHistory
 
 # Set title of the page
 st.set_page_config(page_title="Company X: Chat with Documents", page_icon="🤖")
 st.title("🤖 Company X: Chat with Documents")
 
 # Setup memory for contextual conversation
-msgs = StreamlitChatMessageHistory()
+msgs = CustomChatHistory()
 
 # Set LLMChatBot
 llm_chatbot = LLMChatBot()
