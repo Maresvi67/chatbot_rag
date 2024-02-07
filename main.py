@@ -3,6 +3,10 @@ import streamlit as st
 
 from chatdoc.chatbot import LLMChatBot
 from chatdoc.chat_message_histories import CustomChatHistory
+from chatdoc.utils import get_llm
+
+# Parameters
+LLM_MODEL_NAME = "debug"
 
 # Set title of the page
 st.set_page_config(page_title="Company X: Chat with Documents", page_icon="🤖")
@@ -11,8 +15,11 @@ st.title("🤖 Company X: Chat with Documents")
 # Setup memory for contextual conversation
 msgs = CustomChatHistory()
 
+# Set LLM
+llm_client = get_llm(LLM_MODEL_NAME)
+
 # Set LLMChatBot
-llm_chatbot = LLMChatBot()
+llm_chatbot = LLMChatBot(llm=llm_client)
 
 # Clear messagge
 if len(msgs.messages) == 0 or st.sidebar.button("Clear message history"):
