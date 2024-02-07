@@ -1,4 +1,5 @@
 from chatdoc.chat_message_histories import CustomChatHistory
+from chatdoc.prompts import prompt_q2d_zs, prompt_cot, prompt_conv
 
 
 class LLMChatBot():
@@ -30,7 +31,8 @@ class LLMChatBot():
         - str: The expanded query.
         """
         tokenize_query = self.tokenizer.apply_chat_template([{"role" : "user", "content" : query}], tokenize=False)
-        llm_output = self.llm.text_generation(tokenize_query, max_new_tokens=max_new_tokens)
+        prompt_query = prompt_cot.format(query=tokenize_query)
+        llm_output = self.llm.text_generation(prompt_query, max_new_tokens=max_new_tokens)
 
         expanded_query = "\n\n".join(n_query * [query]) + "\n\n" + llm_output
         

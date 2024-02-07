@@ -3,7 +3,7 @@ from langchain.chat_models.base import BaseChatModel
 from huggingface_hub import InferenceClient
 from transformers import AutoTokenizer
 
-def get_llm(model: str, **kwargs) -> BaseChatModel:
+def get_llm(model: str, **kwargs):
     if model == "debug":
         return FakeChatModel()
 
@@ -12,7 +12,7 @@ def get_llm(model: str, **kwargs) -> BaseChatModel:
 
     raise NotImplementedError(f"Model {model} not supported!")
 
-def get_tokenizer(model: str, **kwargs) -> BaseChatModel:
+def get_tokenizer(model: str, **kwargs):
     if model == "debug":
         return FakeTokenizer()
 
