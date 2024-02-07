@@ -2,7 +2,7 @@ from chatdoc.chat_message_histories import CustomChatHistory
 
 
 class LLMChatBot():
-    def __init__(self, llm):
+    def __init__(self, llm, tokenizer):
         """
         Initializes the Language Model Chat Bot.
 
@@ -13,9 +13,10 @@ class LLMChatBot():
         - None
         """
         self.llm = llm
+        self.tokenizer = tokenizer
 
 
-    def generate_expanded_query(self, query:str, n_query: int=5):
+    def generate_expanded_query(self, query:str, n_query: int=5, max_new_tokens=512):
         """
         Generates an expanded query by repeating the input query.
 
@@ -28,10 +29,10 @@ class LLMChatBot():
         Returns:
         - str: The expanded query.
         """
-        
-        llm_output = self.llm.text_generation(query)
+        tokenize_query = self.tokenizer.apply_chat_template([{"role" : "user", "content" : query}], tokenize=False)
+        llm_output = self.llm.text_generation(tokenize_query, max_new_tokens=max_new_tokens)
 
-        expanded_query = "\n".join(n_query * [query]) + "\n" + llm_output
+        expanded_query = "\n\n".join(n_query * [query]) + "\n\n" + llm_output
         
         return expanded_query
 

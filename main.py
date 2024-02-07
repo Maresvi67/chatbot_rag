@@ -4,7 +4,7 @@ import streamlit as st
 from dotenv import load_dotenv
 from chatdoc.chatbot import LLMChatBot
 from chatdoc.chat_message_histories import CustomChatHistory
-from chatdoc.utils import get_llm
+from chatdoc.utils import get_llm, get_tokenizer
 
 # Load enviroment variables
 load_dotenv()
@@ -22,8 +22,11 @@ msgs = CustomChatHistory()
 # Set LLM
 llm_client = get_llm(LLM_MODEL_NAME)
 
+# Set Tokenizer
+tokenizer = get_tokenizer(LLM_MODEL_NAME)
+
 # Set LLMChatBot
-llm_chatbot = LLMChatBot(llm=llm_client)
+llm_chatbot = LLMChatBot(llm=llm_client, tokenizer=tokenizer)
 
 # Clear messagge
 if len(msgs.messages) == 0 or st.sidebar.button("Clear message history"):
