@@ -1,5 +1,5 @@
 from chatdoc.chat_message_histories import CustomChatHistory
-from chatdoc.prompts import prompt_q2d_zs, prompt_cot, prompt_conv
+from chatdoc.prompts import prompt_q2d_zs, prompt_cot, prompt_conv, prompt_cot_prf, prompt_cot_prf_mod
 
 
 class LLMChatBot():
@@ -41,7 +41,7 @@ class LLMChatBot():
         
         return expanded_query
 
-    def retrieve_documents(self, query:str, k: int=5):
+    def retrieve_documents(self, query:str, k: int=3):
         """
         Retrieves relevant documents based on the input query.
 
@@ -88,8 +88,12 @@ class LLMChatBot():
         retieval_docs = self.retrieve_documents(expanded_query)
 
         # Reranker
+        # TODO: Add reranker
 
         # LLM
+        context_text = "\n\n---\n\n".join([doc.page_content for doc in retieval_docs])
+        tokenize_query = self.tokenizer.apply_chat_template([{"role" : "user", "content" : query}], tokenize=False)
+        prompt_query = prompt_cot_prf_mod.format(query=tokenize_query, context=context_text)
+        generated_answer = self.llm.text_generation(prompt_query, max_new_tokens=512)
 
-        generated_answer = expanded_query
         return generated_answer
