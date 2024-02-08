@@ -58,7 +58,7 @@ class LLMChatBot():
 
         return retieval_docs
 
-    def rerank_docs(self, retieval_docs, th=0):
+    def rerank_docs(self, query, retieval_docs, th=0):
         query_and_docs  = [[query, i.page_content] for i in retieval_docs]
         scores = self.reranker.compute_score(query_and_docs)
         sorted_docs = sorted(zip(scores, retieval_docs), reverse=True)
@@ -95,10 +95,10 @@ class LLMChatBot():
         retieval_docs = self.retrieve_documents(expanded_query)
 
         # Reranker
-        reranked_docs = self.rerank_docs(retieval_docs)
+        reranked_docs = self.rerank_docs(query, retieval_docs)
 
         # LLM
-        if len(reranker_docs) > 0:
+        if len(reranked_docs) > 0:
             context_text = "\n\n---\n\n".join([doc.page_content for doc in reranked_docs])
             prompt_query = prompt_cot_prf_mod.format(query=query, context=context_text)
         else:
@@ -107,4 +107,10 @@ class LLMChatBot():
         tokenize_query = self.tokenizer.apply_chat_template([{"role" : "user", "content" : prompt_query}], tokenize=False, add_generation_prompt=True)
         generated_answer = self.llm.text_generation(prompt_query, max_new_tokens=512)
 
-        return generated_answer
+        if len(reranked_docs) > 0:
+            docs_output = "\n\n".join([doc.metadata["source"] for doc in reranked_docs])
+            result = f"""{generated_answer}\n\nThis answer is derived from the information found in the following documents:\n\n{docs_output}"""
+        else:
+            result = f"""{generated_answer}\n\nNo files directly address this question; however, the answer provided may offer valuable insights."""
+
+        return result
