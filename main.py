@@ -1,19 +1,50 @@
 import os
 import streamlit as st
 
-from langchain_community.chat_message_histories import StreamlitChatMessageHistory
+from dotenv import load_dotenv
+from chatdoc.chatbot import LLMChatBot
+from chatdoc.chat_message_histories import CustomChatHistory
+from chatdoc.utils import get_llm, get_tokenizer, get_emdedding, get_db
+
+# Load enviroment variables
+load_dotenv()
+
+# Parameters
+LLM_MODEL_NAME = "debug"
+EMBEDDING_NAME = "BAAI/bge-small-en-v1.5"
+CHROMA_PATH="D:\Chroma"
 
 # Set title of the page
 st.set_page_config(page_title="Company X: Chat with Documents", page_icon="🤖")
 st.title("🤖 Company X: Chat with Documents")
 
 # Setup memory for contextual conversation
-msgs = StreamlitChatMessageHistory()
+msgs = CustomChatHistory()
+
+# Set LLM
+llm_client = get_llm(LLM_MODEL_NAME)
+
+# Set Embedding
+embedding = get_emdedding(EMBEDDING_NAME)
+
+# Set Tokenizer
+tokenizer = get_tokenizer(LLM_MODEL_NAME)
+
+# Set DB
+chroma_db = get_db(CHROMA_PATH, embedding=embedding)
+
+# Set LLMChatBot
+llm_chatbot = LLMChatBot(llm=llm_client, tokenizer=tokenizer, embedding=embedding, chroma_db=chroma_db)
 
 # Clear messagge
 if len(msgs.messages) == 0 or st.sidebar.button("Clear message history"):
     msgs.clear()
     msgs.add_ai_message("How can I help you?")
+
+
+# Convert data to chroma
+if st.sidebar.button("Vectorize Files"):
+    pass
 
 # Generete the messages in the interface
 avatars = {"human": "user", "ai": "assistant"}
@@ -30,7 +61,7 @@ if user_query := st.chat_input(placeholder="Ask me anything!"):
         st.write(user_query)
 
     # Generate the result of the chatbot
-    result = "I\'ll be ready to answer your questions shortly!"
+    result = llm_chatbot.answer(msgs)
 
     # Add assistant input to chat history
     msgs.add_ai_message(result)
