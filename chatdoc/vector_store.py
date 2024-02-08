@@ -37,3 +37,11 @@ def save_to_chroma(chunks: list[Document], db_path, embedding):
         chunks, embedding, persist_directory=db_path
     )
     db.persist()
+
+
+def chunks_2_chroma(chunks: list[Document], embedding):
+    # Create a new DB from the documents.
+    db = Chroma.from_documents(
+        chunks, embedding
+    )
+    return db
