@@ -11,7 +11,7 @@ class CustomChatHistory(StreamlitChatMessageHistory):
         """
         Convert messages attributes to a list.
 
-        Returns:
+        Returns: 
         list: A list containing dictionaries with message attributes.
         """
         messages_list = []
