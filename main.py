@@ -41,6 +41,11 @@ if len(msgs.messages) == 0 or st.sidebar.button("Clear message history"):
     msgs.clear()
     msgs.add_ai_message("How can I help you?")
 
+
+# Convert data to chroma
+if st.sidebar.button("Vectorize Files"):
+    pass
+
 # Generete the messages in the interface
 avatars = {"human": "user", "ai": "assistant"}
 for msg in msgs.messages:
