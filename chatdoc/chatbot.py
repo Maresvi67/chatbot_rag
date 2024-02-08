@@ -5,7 +5,7 @@ from chatdoc.prompts import prompt_q2d_zs, prompt_cot, prompt_conv, prompt_cot_p
 class LLMChatBot():
     def __init__(self, llm, tokenizer, embedding, chroma_db):
         """
-        Initializes the Language Model Chat Bot.
+        Initializes the Language Model Chat Bot. 
 
         Parameters:
         - llm: The language model instance.
