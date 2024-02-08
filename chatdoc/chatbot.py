@@ -3,19 +3,20 @@ from chatdoc.prompts import prompt_q2d_zs, prompt_cot, prompt_conv
 
 
 class LLMChatBot():
-    def __init__(self, llm, tokenizer, embedding):
+    def __init__(self, llm, tokenizer, embedding, chroma_db):
         """
         Initializes the Language Model Chat Bot.
 
         Parameters:
-        - None
-
-        Returns:
-        - None
+        - llm: The language model instance.
+        - tokenizer: The tokenizer used for processing text.
+        - embedding: The embedding model.
+        - chroma_db: The ChromaDB instance for document retrieval.
         """
         self.llm = llm
         self.tokenizer = tokenizer
         self.embedding = embedding
+        self.chroma_db = chroma_db
 
 
     def generate_expanded_query(self, query:str, n_query: int=5, max_new_tokens=512):
@@ -27,6 +28,7 @@ class LLMChatBot():
         Parameters:
         - query (str): The input query.
         - n_query (int): The number of times the input query will be repeated to expand the query.
+        - max_new_tokens (int): The maximum number of tokens allowed in the generated response.
 
         Returns:
         - str: The expanded query.
@@ -38,6 +40,23 @@ class LLMChatBot():
         expanded_query = "\n\n".join(n_query * [query]) + "\n\n" + llm_output
         
         return expanded_query
+
+    def retrieve_documents(self, query:str, k: int=5):
+        """
+        Retrieves relevant documents based on the input query.
+
+        Parameters:
+        - query (str): The input query.
+        - k (int): The number of documents to retrieve.
+
+        Returns:
+        - list: Relevant documents.
+        """
+        retriever = self.chroma_db.as_retriever(search_kwargs={"k": k})
+        retieval_docs = retriever.get_relevant_documents(query)
+
+        return retieval_docs
+
 
     def answer(self, messages : CustomChatHistory):
         """
@@ -66,9 +85,7 @@ class LLMChatBot():
         expanded_query = self.generate_expanded_query(query)
 
         # Retriver
-        # db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_hf)
-        # retriever = db.as_retriever(search_kwargs={"k": 5})
-        # retieval_docs = retriever.get_relevant_documents(expanded_query)
+        retieval_docs = self.retrieve_documents(expanded_query)
 
         # Reranker
 

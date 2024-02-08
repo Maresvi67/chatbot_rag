@@ -3,8 +3,18 @@ from langchain.chat_models.base import BaseChatModel
 from huggingface_hub import InferenceClient
 from transformers import AutoTokenizer
 from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain.vectorstores.chroma import Chroma
 
 def get_llm(model: str, **kwargs):
+    """
+    Get a Language Model instance based on the specified model.
+
+    Parameters:
+    - model (str): The name of the language model.
+
+    Returns:
+    - BaseChatModel: An instance of the language model.
+    """
     if model == "debug":
         return FakeChatModel()
 
@@ -14,6 +24,15 @@ def get_llm(model: str, **kwargs):
     raise NotImplementedError(f"Model {model} not supported!")
 
 def get_tokenizer(model: str, **kwargs):
+    """
+    Get a tokenizer instance based on the specified model.
+
+    Parameters:
+    - model (str): The name of the tokenizer.
+
+    Returns:
+    - AutoTokenizer: An instance of the tokenizer.
+    """
     if model == "debug":
         return FakeTokenizer()
 
@@ -25,6 +44,15 @@ def get_tokenizer(model: str, **kwargs):
     raise NotImplementedError(f"Tokenizer {model} not supported!")
 
 def get_emdedding(model: str, **kwargs):
+    """
+    Get an embedding instance based on the specified model.
+
+    Parameters:
+    - model (str): The name of the embedding model.
+
+    Returns:
+    - HuggingFaceEmbeddings: An instance of the embedding model.
+    """
     if model == "debug":
         return FakeEmbeddings()
 
@@ -33,3 +61,17 @@ def get_emdedding(model: str, **kwargs):
         return embedding_hf
 
     raise NotImplementedError(f"Embedding {model} not supported!")
+
+def get_db(chome_path="D:\Chroma", embedding=None, **kwargs):
+    """
+    Get a Chroma vector store instance.
+
+    Parameters:
+    - chroma_path (str): The path to the Chroma vector store.
+    - embedding: The embedding function to use.
+
+    Returns:
+    - Chroma: An instance of the Chroma vector store.
+    """
+    db = Chroma(persist_directory=chome_path, embedding_function=embedding)
+    return db

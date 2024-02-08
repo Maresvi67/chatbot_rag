@@ -4,13 +4,15 @@ import streamlit as st
 from dotenv import load_dotenv
 from chatdoc.chatbot import LLMChatBot
 from chatdoc.chat_message_histories import CustomChatHistory
-from chatdoc.utils import get_llm, get_tokenizer, get_emdedding
+from chatdoc.utils import get_llm, get_tokenizer, get_emdedding, get_db
 
 # Load enviroment variables
 load_dotenv()
 
 # Parameters
 LLM_MODEL_NAME = "debug"
+EMBEDDING_NAME = "BAAI/bge-small-en-v1.5"
+CHROMA_PATH="D:\Chroma"
 
 # Set title of the page
 st.set_page_config(page_title="Company X: Chat with Documents", page_icon="🤖")
@@ -28,8 +30,11 @@ embedding = get_emdedding(EMBEDDING_NAME)
 # Set Tokenizer
 tokenizer = get_tokenizer(LLM_MODEL_NAME)
 
+# Set DB
+chroma_db = get_db(CHROMA_PATH, embedding=embedding)
+
 # Set LLMChatBot
-llm_chatbot = LLMChatBot(llm=llm_client, tokenizer=tokenizer, embedding=embedding)
+llm_chatbot = LLMChatBot(llm=llm_client, tokenizer=tokenizer, embedding=embedding, chroma_db=chroma_db)
 
 # Clear messagge
 if len(msgs.messages) == 0 or st.sidebar.button("Clear message history"):
