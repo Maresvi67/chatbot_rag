@@ -1,10 +1,11 @@
 import os
-from chatdoc.debug import FakeChatModel, FakeTokenizer, FakeEmbeddings
+from chatdoc.debug import FakeChatModel, FakeTokenizer, FakeEmbeddings, FakeReranker
 from langchain.chat_models.base import BaseChatModel
 from huggingface_hub import InferenceClient
 from transformers import AutoTokenizer
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores.chroma import Chroma
+from FlagEmbedding import FlagReranker
 
 def get_llm(model: str, **kwargs):
     """
@@ -60,6 +61,25 @@ def get_emdedding(model: str, **kwargs):
     if "bge-small" in model:
         embedding_hf = HuggingFaceEmbeddings(model_name=model)
         return embedding_hf
+
+    raise NotImplementedError(f"Embedding {model} not supported!")
+
+def get_reranker(model: str, **kwargs):
+    """
+    Get an embedding instance based on the specified model.
+
+    Parameters:
+    - model (str): The name of the embedding model.
+
+    Returns:
+    - HuggingFaceEmbeddings: An instance of the embedding model.
+    """
+    if model == "debug":
+        return FakeReranker()
+
+    if "bge-reranker" in model:
+        reranker = FlagReranker(model)
+        return reranker
 
     raise NotImplementedError(f"Embedding {model} not supported!")
 

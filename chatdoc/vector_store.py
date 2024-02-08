@@ -2,7 +2,7 @@ import os
 import shutil
 from langchain.docstore.document import Document
 from transformers import GPT2TokenizerFast
-from langchain.text_splitter import MarkdownTextSplitter
+from langchain.text_splitter import MarkdownTextSplitter, RecursiveCharacterTextSplitter
 from langchain.vectorstores.chroma import Chroma
 
 def docs2langdoc(docs):
@@ -19,8 +19,8 @@ def docs2langdoc(docs):
 
 def split_text(documents: list[Document]):
     tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
-    text_splitter = MarkdownTextSplitter.from_huggingface_tokenizer(tokenizer,
-                                                                                chunk_size=512,
+    text_splitter = RecursiveCharacterTextSplitter.from_huggingface_tokenizer(tokenizer,
+                                                                                chunk_size=128,
                                                                                 chunk_overlap=20
                                                                                 )
 

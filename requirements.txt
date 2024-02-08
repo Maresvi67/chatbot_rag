@@ -7,4 +7,5 @@ transformers==4.37.2
 unstructured==0.12.3
 langchain-community==0.0.18
 chromadb==0.4.22
+FlagEmbedding==1.2.3
 unstructured[md]

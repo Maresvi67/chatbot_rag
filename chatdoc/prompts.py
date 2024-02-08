@@ -26,8 +26,6 @@ Context
 ==============
 
 Question: {query}
-
-
 """
 
 prompt_q2d_zs = PromptTemplate.from_template(string_q2d_zs)

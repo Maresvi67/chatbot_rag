@@ -4,7 +4,7 @@ import streamlit as st
 from dotenv import load_dotenv
 from chatdoc.chatbot import LLMChatBot
 from chatdoc.chat_message_histories import CustomChatHistory
-from chatdoc.utils import get_llm, get_tokenizer, get_emdedding, get_db
+from chatdoc.utils import get_llm, get_tokenizer, get_emdedding, get_db, get_reranker
 from chatdoc.vector_store import docs2langdoc, split_text, chunks_2_chroma
 from streamlit import session_state as ss
 
@@ -14,6 +14,7 @@ load_dotenv()
 # Parameters
 LLM_MODEL_NAME = "mistralai/Mistral-7B-v0.1"
 EMBEDDING_NAME = "BAAI/bge-small-en-v1.5"
+RERANKER_NAME = 'BAAI/bge-reranker-large'
 
 # Set title of the page
 st.set_page_config(page_title="Company X: Chat with Documents", page_icon="🤖")
@@ -39,6 +40,12 @@ if 'tokenizer' not in ss:
     ss['tokenizer'] = get_tokenizer(LLM_MODEL_NAME)
     
 tokenizer = ss['tokenizer']
+
+# Set Reranker
+if 'reranker' not in ss:
+    ss['reranker'] = get_reranker(RERANKER_NAME)
+    
+reranker = ss['reranker']
 
 # Convert data to chroma
 if 'show_uploader' not in ss:
@@ -68,7 +75,7 @@ else:
     st.stop()
 
 # Set LLMChatBot
-llm_chatbot = LLMChatBot(llm=llm_client, tokenizer=tokenizer, embedding=embedding, chroma_db=chroma_db)
+llm_chatbot = LLMChatBot(llm=llm_client, tokenizer=tokenizer, embedding=embedding, reranker=reranker, chroma_db=chroma_db)
 
 # Clear messagge
 if len(msgs.messages) == 0 or st.sidebar.button("Clear message history"):
