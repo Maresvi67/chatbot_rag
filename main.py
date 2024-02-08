@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from chatdoc.chatbot import LLMChatBot
 from chatdoc.chat_message_histories import CustomChatHistory
 from chatdoc.utils import get_llm, get_tokenizer, get_emdedding, get_db
+from chatdoc.vector_store import docs2langdoc, split_text, save_to_chroma
 
 # Load enviroment variables
 load_dotenv()
@@ -36,15 +37,28 @@ chroma_db = get_db(CHROMA_PATH, embedding=embedding)
 # Set LLMChatBot
 llm_chatbot = LLMChatBot(llm=llm_client, tokenizer=tokenizer, embedding=embedding, chroma_db=chroma_db)
 
+# Convert data to chroma
+uploaded_files = st.sidebar.file_uploader(
+    "Upload .md files",
+    type=["md"],
+    help="Only Markdown files are supported",
+    accept_multiple_files=True)
+
+if uploaded_files:
+
+    del chroma_db
+    
+    with st.spinner("Indexing document... This may take a while⏳"):
+        documents = docs2langdoc(uploaded_files)
+        chunks = split_text(documents)
+        save_to_chroma(chunks, CHROMA_PATH, embedding)
+
+    chroma_db = get_db(CHROMA_PATH, embedding=embedding)
+
 # Clear messagge
 if len(msgs.messages) == 0 or st.sidebar.button("Clear message history"):
     msgs.clear()
     msgs.add_ai_message("How can I help you?")
-
-
-# Convert data to chroma
-if st.sidebar.button("Vectorize Files"):
-    pass
 
 # Generete the messages in the interface
 avatars = {"human": "user", "ai": "assistant"}
