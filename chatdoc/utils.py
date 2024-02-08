@@ -1,3 +1,4 @@
+import os
 from chatdoc.debug import FakeChatModel, FakeTokenizer, FakeEmbeddings
 from langchain.chat_models.base import BaseChatModel
 from huggingface_hub import InferenceClient
@@ -73,5 +74,8 @@ def get_db(chome_path="D:\Chroma", embedding=None, **kwargs):
     Returns:
     - Chroma: An instance of the Chroma vector store.
     """
-    db = Chroma(persist_directory=chome_path, embedding_function=embedding)
+    if os.path.exists(chome_path) and os.path.isdir(chome_path):
+        db = Chroma(persist_directory=chome_path, embedding_function=embedding)
+    else:
+        db = None
     return db
