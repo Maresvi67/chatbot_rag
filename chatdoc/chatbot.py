@@ -65,6 +65,11 @@ class LLMChatBot():
         expanded_query = self.generate_expanded_query(query)
 
         # Retriver
+        # db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_hf)
+        # retriever = db.as_retriever(search_kwargs={"k": 5})
+        # retieval_docs = retriever.get_relevant_documents(expanded_query)
+
+        # Reranker
 
         # LLM
 

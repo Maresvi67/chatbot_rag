@@ -4,7 +4,7 @@ import streamlit as st
 from dotenv import load_dotenv
 from chatdoc.chatbot import LLMChatBot
 from chatdoc.chat_message_histories import CustomChatHistory
-from chatdoc.utils import get_llm, get_tokenizer
+from chatdoc.utils import get_llm, get_tokenizer, get_emdedding
 
 # Load enviroment variables
 load_dotenv()
@@ -21,6 +21,9 @@ msgs = CustomChatHistory()
 
 # Set LLM
 llm_client = get_llm(LLM_MODEL_NAME)
+
+# Set Embedding
+embedding = get_emdedding(EMBEDDING_NAME)
 
 # Set Tokenizer
 tokenizer = get_tokenizer(LLM_MODEL_NAME)

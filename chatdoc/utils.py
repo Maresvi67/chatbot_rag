@@ -1,7 +1,8 @@
-from chatdoc.debug import FakeChatModel, FakeTokenizer
+from chatdoc.debug import FakeChatModel, FakeTokenizer, FakeEmbeddings
 from langchain.chat_models.base import BaseChatModel
 from huggingface_hub import InferenceClient
 from transformers import AutoTokenizer
+from sentence_transformers import SentenceTransformer
 
 def get_llm(model: str, **kwargs):
     if model == "debug":
@@ -23,4 +24,12 @@ def get_tokenizer(model: str, **kwargs):
 
     raise NotImplementedError(f"Tokenizer {model} not supported!")
 
-# prompt__ = "This is a conversation, Always generate grammatically correct sentences that no repeat. The user is a very understanding. Respond to recent discussion between user and you"
+def get_emdedding(model: str, **kwargs):
+    if model == "debug":
+        return FakeEmbeddings()
+
+    if "bge-small" in model:
+        embedding_hf = SentenceTransformer(model)
+        return embedding_hf
+
+    raise NotImplementedError(f"Embedding {model} not supported!")

@@ -1,4 +1,5 @@
 from langchain.chat_models.fake import FakeListChatModel
+from langchain.embeddings.fake import FakeEmbeddings as FakeEmbeddingsBase
 
 
 class FakeChatModel(FakeListChatModel):
@@ -8,6 +9,12 @@ class FakeChatModel(FakeListChatModel):
 
     def text_generation(self, query, **kwargs):
         return("Lorem ipsum dolor sit amet, consectetur adipiscing elit")
+        
+
+class FakeEmbeddings(FakeEmbeddingsBase):
+    def __init__(self, **kwargs):
+        super().__init__(size=4, **kwargs)
+
 
 class FakeTokenizer():
     def __init__(self):
