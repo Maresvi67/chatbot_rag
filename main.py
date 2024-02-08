@@ -29,7 +29,7 @@ embedding = get_emdedding(EMBEDDING_NAME)
 tokenizer = get_tokenizer(LLM_MODEL_NAME)
 
 # Set LLMChatBot
-llm_chatbot = LLMChatBot(llm=llm_client, tokenizer=tokenizer)
+llm_chatbot = LLMChatBot(llm=llm_client, tokenizer=tokenizer, embedding=embedding)
 
 # Clear messagge
 if len(msgs.messages) == 0 or st.sidebar.button("Clear message history"):

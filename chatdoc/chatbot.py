@@ -3,7 +3,7 @@ from chatdoc.prompts import prompt_q2d_zs, prompt_cot, prompt_conv
 
 
 class LLMChatBot():
-    def __init__(self, llm, tokenizer):
+    def __init__(self, llm, tokenizer, embedding):
         """
         Initializes the Language Model Chat Bot.
 
@@ -15,6 +15,7 @@ class LLMChatBot():
         """
         self.llm = llm
         self.tokenizer = tokenizer
+        self.embedding = embedding
 
 
     def generate_expanded_query(self, query:str, n_query: int=5, max_new_tokens=512):

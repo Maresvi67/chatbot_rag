@@ -2,7 +2,7 @@ from chatdoc.debug import FakeChatModel, FakeTokenizer, FakeEmbeddings
 from langchain.chat_models.base import BaseChatModel
 from huggingface_hub import InferenceClient
 from transformers import AutoTokenizer
-from sentence_transformers import SentenceTransformer
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 def get_llm(model: str, **kwargs):
     if model == "debug":
@@ -29,7 +29,7 @@ def get_emdedding(model: str, **kwargs):
         return FakeEmbeddings()
 
     if "bge-small" in model:
-        embedding_hf = SentenceTransformer(model)
+        embedding_hf = HuggingFaceEmbeddings(model_name=model)
         return embedding_hf
 
     raise NotImplementedError(f"Embedding {model} not supported!")
