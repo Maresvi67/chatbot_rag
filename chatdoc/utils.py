@@ -7,7 +7,7 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores.chroma import Chroma
 from FlagEmbedding import FlagReranker
 
-def get_llm(model: str, **kwargs):
+def get_llm(model: str, **kwargs) -> BaseChatModel:
     """
     Get a Language Model instance based on the specified model.
 
@@ -25,7 +25,7 @@ def get_llm(model: str, **kwargs):
 
     raise NotImplementedError(f"Model {model} not supported!")
 
-def get_tokenizer(model: str, **kwargs):
+def get_tokenizer(model: str, **kwargs) -> AutoTokenizer:
     """
     Get a tokenizer instance based on the specified model.
 
@@ -45,7 +45,7 @@ def get_tokenizer(model: str, **kwargs):
 
     raise NotImplementedError(f"Tokenizer {model} not supported!")
 
-def get_emdedding(model: str, **kwargs):
+def get_embedding(model: str, **kwargs) -> HuggingFaceEmbeddings:
     """
     Get an embedding instance based on the specified model.
 
@@ -64,15 +64,15 @@ def get_emdedding(model: str, **kwargs):
 
     raise NotImplementedError(f"Embedding {model} not supported!")
 
-def get_reranker(model: str, **kwargs):
+def get_reranker(model: str, **kwargs) -> FlagReranker:
     """
-    Get an embedding instance based on the specified model.
+    Get a reranker instance based on the specified model.
 
     Parameters:
-    - model (str): The name of the embedding model.
+    - model (str): The name of the reranker model.
 
     Returns:
-    - HuggingFaceEmbeddings: An instance of the embedding model.
+    - FlagReranker: An instance of the reranker model.
     """
     if model == "debug":
         return FakeReranker()
@@ -81,9 +81,9 @@ def get_reranker(model: str, **kwargs):
         reranker = FlagReranker(model)
         return reranker
 
-    raise NotImplementedError(f"Embedding {model} not supported!")
+    raise NotImplementedError(f"Reranker {model} not supported!")
 
-def get_db(chome_path="D:\Chroma", embedding=None, **kwargs):
+def get_db(chroma_path="D:\Chroma", embedding=None, **kwargs) -> Chroma:
     """
     Get a Chroma vector store instance.
 
@@ -92,10 +92,10 @@ def get_db(chome_path="D:\Chroma", embedding=None, **kwargs):
     - embedding: The embedding function to use.
 
     Returns:
-    - Chroma: An instance of the Chroma vector store.
+    - Chroma: An instance of the Chroma vector store or None if the path doesn't exist.
     """
-    if os.path.exists(chome_path) and os.path.isdir(chome_path):
-        db = Chroma(persist_directory=chome_path, embedding_function=embedding)
+    if os.path.exists(chroma_path) and os.path.isdir(chroma_path):
+        db = Chroma(persist_directory=chroma_path, embedding_function=embedding)
     else:
         db = None
     return db
