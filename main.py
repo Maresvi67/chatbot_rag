@@ -4,7 +4,7 @@ import streamlit as st
 from dotenv import load_dotenv
 from chatdoc.chatbot import LLMChatBot
 from chatdoc.chat_message_histories import CustomChatHistory
-from chatdoc.utils import get_llm, get_tokenizer, get_emdedding, get_db, get_reranker
+from chatdoc.utils import get_llm, get_tokenizer, get_embedding, get_db, get_reranker
 from chatdoc.vector_store import docs2langdoc, split_text, chunks_2_chroma
 from streamlit import session_state as ss
 
@@ -31,7 +31,7 @@ llm_client = ss['llm_client']
 
 # Set Embedding
 if 'embedding' not in ss:
-    ss['embedding'] = get_emdedding(EMBEDDING_NAME)
+    ss['embedding'] = get_embedding(EMBEDDING_NAME)
 
 embedding = ss['embedding']
 
