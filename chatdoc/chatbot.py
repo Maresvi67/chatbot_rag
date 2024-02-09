@@ -3,6 +3,16 @@ from chatdoc.prompts import prompt_q2d_zs, prompt_cot, prompt_conv, prompt_cot_p
 
 
 class LLMChatBot():
+    """
+    Language Model Chat Bot that uses a combination of document retrieval, reranking, and a language model to generate answers.
+
+    Attributes:
+    - llm: The language model instance.
+    - tokenizer: The tokenizer used for processing text.
+    - embedding: The embedding model.
+    - reranker: The reranker instance for document reranking.
+    - chroma_db: The ChromaDB instance for document retrieval.
+    """
     def __init__(self, llm, tokenizer, embedding, reranker, chroma_db):
         """
         Initializes the Language Model Chat Bot. 
@@ -11,6 +21,7 @@ class LLMChatBot():
         - llm: The language model instance.
         - tokenizer: The tokenizer used for processing text.
         - embedding: The embedding model.
+        - reranker: The reranker instance for document reranking.
         - chroma_db: The ChromaDB instance for document retrieval.
         """
         self.llm = llm
@@ -59,18 +70,30 @@ class LLMChatBot():
         return retieval_docs
 
     def rerank_docs(self, query, retieval_docs, th=0):
+        """
+        Reranks retrieved documents based on the input query and reranker instance.
+
+        Parameters:
+        - query (str): The input query.
+        - retieval_docs (list): The list of retrieved documents.
+        - th (float): Reranking threshold.
+
+        Returns:
+        - list: Reranked documents.
+        """
         query_and_docs  = [[query, i.page_content] for i in retieval_docs]
         scores = self.reranker.compute_score(query_and_docs)
         sorted_docs = sorted(zip(scores, retieval_docs), reverse=True)
         reranker_docs = [i[1] for i in sorted_docs if i[0] > th]
         return reranker_docs
 
-    def answer(self, messages : CustomChatHistory):
+    def answer(self, messages : CustomChatHistory, max_new_tokens=512):
         """
         Generates an answer based on the provided chat message history.
 
         Parameters:
         - messages (CustomChatHistory): The chat message history.
+        - max_new_tokens (int): The maximum number of tokens allowed in the generated response.
 
         Returns:
         - str: The generated answer.
@@ -105,7 +128,7 @@ class LLMChatBot():
             prompt_query = prompt_cot.format(query=query)
 
         tokenize_query = self.tokenizer.apply_chat_template([{"role" : "user", "content" : prompt_query}], tokenize=False, add_generation_prompt=True)
-        generated_answer = self.llm.text_generation(prompt_query, max_new_tokens=512)
+        generated_answer = self.llm.text_generation(prompt_query, max_new_tokens=max_new_tokens)
 
         if len(reranked_docs) > 0:
             docs_output = "\n\n".join([doc.metadata["source"] for doc in reranked_docs])

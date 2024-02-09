@@ -1,5 +1,7 @@
 from langchain.prompts import PromptTemplate
 
+# Some of this prompts are based on https://arxiv.org/abs/2305.03653.
+
 string_q2d_zs = """Write a passage that answers the following query: {query}"""
 
 string_cot = """Question: {query}
