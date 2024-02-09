@@ -26,7 +26,7 @@ $ source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
 ```shell
 $ pip install -r requirements.txt
 ```
-4. Create an .env file in the project root and set the HUGGINGFACEHUB_API_TOKEN:
+4. Create an .env file in the project root and set the HUGGINGFACEHUB_API_TOKEN. A sample is provided in the repository; make sure to rename it to .env:
 ```shell
 HUGGINGFACEHUB_API_TOKEN=your_token_here
 ```
