@@ -18,25 +18,29 @@ def docs2langdoc(docs):
     documents = []
     for doc in docs:
         if doc:
+            # Read the content of the document and create a language document
             content = doc.read().decode("utf-8", errors="replace")
             source = doc.name
             lang_doc = Document(page_content=content, metadata={"source": source})
             documents.append(lang_doc)
     return documents
 
-def split_text(documents: list[Document]):
+def split_text(documents: list[Document], chunk_size=128, chunk_overlap=20):
     """
     Splits text in documents using GPT-2 tokenizer.
 
     Parameters:
     - documents (list[Document]): List of documents to split.
+    - chunk_size (int): Size of each text chunk (default is 128 tokens).
+    - chunk_overlap (int): Number of overlapping tokens between adjacent chunks (default is 20).
 
     Returns:
     - list[Document]: List of split text chunks.
     """
+    # Use GPT-2 tokenizer to split text in documents
     tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
     text_splitter = RecursiveCharacterTextSplitter.from_huggingface_tokenizer(
-        tokenizer, chunk_size=128, chunk_overlap=20
+        tokenizer, chunk_size=chunk_size, chunk_overlap=chunk_overlap
     )
     chunks = text_splitter.split_documents(documents)
     return chunks
@@ -57,7 +61,7 @@ def save_to_chroma(chunks: list[Document], db_path, embedding):
     if os.path.exists(db_path):
         shutil.rmtree(db_path)
 
-    # Create a new DB from the documents.
+    # Create a new Chroma database from the split text chunks and the embedding function
     db = Chroma.from_documents(chunks, embedding, persist_directory=db_path)
     db.persist()
 
@@ -72,6 +76,6 @@ def chunks_2_chroma(chunks: list[Document], embedding):
     Returns:
     - Chroma: The Chroma database.
     """
-    # Create a new DB from the documents.
+    # Create a new Chroma database from the split text chunks and the embedding function
     db = Chroma.from_documents(chunks, embedding)
     return db
