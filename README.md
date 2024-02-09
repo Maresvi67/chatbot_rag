@@ -42,6 +42,8 @@ The chatbot follows the Retrieval-Augmented Generation (RAG) technique, where th
 2. Interact with the chatbot by typing your queries in the provided input field.
 3. Receive answers generated based on the combined power of RAG, LangChain, and HuggingFace.
 
+The first excution could take a time for download several component from HuggingFace.
+
 ## References
 Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks ([link](https://arxiv.org/abs/2005.11401))
 Mistral 7B ([link](https://arxiv.org/abs/2310.06825))
