@@ -15,6 +15,9 @@ class FakeEmbeddings(FakeEmbeddingsBase):
     def __init__(self, **kwargs):
         super().__init__(size=4, **kwargs)
 
+class FakeReranker():
+    def __init__(self, **kwargs):
+        pass
 
 class FakeTokenizer():
     def __init__(self):
